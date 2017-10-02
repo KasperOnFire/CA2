@@ -1,10 +1,10 @@
-package cos5.chatserver;
+package chatServer;
 
 /**
  *
  * @author Kasper
  */
-public class TomMain {
+public class ChatServer {
 
     public static void main(String[] args) {
         
