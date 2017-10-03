@@ -44,7 +44,21 @@ public class ChatServer {
         sendClientList();
     }
 
-    public void sendMessage(String input) {
+    public void sendToOne(ClientHandler sender, String person, String msg) {
+        ClientHandler reciever = null;
+        for (ClientHandler ch : chlist) {
+            if (ch.getUsername().equals(person)) {
+                reciever = ch;
+                reciever.printMsg("MSGRES:" + sender.getUsername() + ":" + msg);
+            } else {
+                reciever = sender;
+                //sender.printMsg("User not found");
+            }
+        }
+
+    }
+
+    public void sendToMany(String sender, String persons, String msg) {
         String[] split = input.split(":");
         String cmd;
         String cmd2;
@@ -68,7 +82,7 @@ public class ChatServer {
         connectedClients = sb.toString();
         connectedClients.substring(0, (sb.length() - 1));
         chlist.forEach((h) -> {
-            h.sendMessage(connectedClients);
+            h.printMsg(connectedClients);
         });
     }
 
