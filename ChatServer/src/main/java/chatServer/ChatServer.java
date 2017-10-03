@@ -36,13 +36,15 @@ public class ChatServer {
 
     public void addClient(ClientHandler ch) {
         chlist.add(ch);
+        sendClientList();
     }
 
     public void removeClient(ClientHandler ch) {
         chlist.remove(ch);
+        sendClientList();
     }
 
-    public void parseCommand(String input) {
+    public void sendMessage(String input) {
         String[] split = input.split(":");
         String cmd;
         String cmd2;
@@ -55,24 +57,20 @@ public class ChatServer {
             cmd = split[0];
             msg = split[1];
         }
-
-        switch (cmd) {
-            case "CLIENTLIST":
-                String connectedClients;
-                StringBuilder sb = new StringBuilder("CLIENTLIST:");
-                chlist.forEach((h) -> {
-                    sb.append(h.getUsername() + ",");
-                });
-                chlist.forEach((h) -> {
-                    h.sendMessage();
-                });
-                break;
-            case "MSGRES":
-
-        }
     }
-    
-    public void 
+
+    public void sendClientList() {
+        String connectedClients;
+        StringBuilder sb = new StringBuilder("CLIENTLIST:");
+        chlist.forEach((h) -> {
+            sb.append(h.getUsername() + ",");
+        });
+        connectedClients = sb.toString();
+        connectedClients.substring(0, (sb.length() - 1));
+        chlist.forEach((h) -> {
+            h.sendMessage(connectedClients);
+        });
+    }
 
     public void stop() {
         try {
