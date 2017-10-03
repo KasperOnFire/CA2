@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ClientHandler extends Thread {
+public class Handler extends Thread {
 
     private ChatServer master;
     private Socket socket;
@@ -16,7 +16,7 @@ public class ClientHandler extends Thread {
     private String username;
     private boolean loggedIn;
 
-    public ClientHandler(ChatServer server, Socket socket) throws IOException {
+    public Handler(ChatServer server, Socket socket) throws IOException {
         this.master = server;
         this.socket = socket;
         out = new PrintWriter(socket.getOutputStream(), true);
@@ -27,49 +27,49 @@ public class ClientHandler extends Thread {
     @Override
     public void run() {
         this.master.addClient(this);
-
-        initHelp();
         userLogin();
         while (loggedIn) {
             parseCommand();
         }
         try {
-            this.master.removeClient(this);
+            master.removeClient(this);
             socket.close();
         } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    private void initHelp() {
-        out.println("Usage:");
-        out.println("COMMAND:message");
-        out.println("Reserved Characters : or ,");
-        out.println("Please login. use LOGIN:username");
     }
 
     private void userLogin() {
         String s = in.nextLine();
         String[] split = s.split(":");
-        if (split.length > 2) {
-            out.println("Cant use more than one : here");
-            userLogin();
-        }
-        String cmd = split[0];
-        String uname = split[1];
+        String cmd;
+        String uname;
 
-        if (cmd != "LOGIN") {
-            userLogin();
+        if (split.length > 2) {
+            loggedIn = false;
+        }
+
+        cmd = split[0];
+        uname = split[1];
+
+        if (!cmd.equals("LOGIN")) {
+            loggedIn = false;
         } else if (uname.contains(":") || uname.contains(",")) {
-            out.println("Illegal Characters : or ,");
+            loggedIn = false;
         } else {
             username = uname;
             loggedIn = true;
+            master.sendClientList();
         }
     }
 
     private void parseCommand() {
-        String[] split = in.nextLine().split(":");
+        String input = in.nextLine();
+        if (input.startsWith("LOGOUT")) {
+            loggedIn = false;
+            return;
+        }
+        String[] split = input.split(":");
         String cmd;
         String persons;
         String msg;
@@ -79,19 +79,17 @@ public class ClientHandler extends Thread {
             msg = split[2];
             sendMsg(persons, msg);
         } else {
-            cmd = split[0];
-            msg = split[1];
-            if (cmd == "LOGOUT") {
-                loggedIn = false;
-            }
+            printMsg("No idea what you mean please try again");
         }
     }
 
     private void sendMsg(String persons, String msg) {
         if (persons.contains(",")) {
-
+            master.sendToMany(this, persons, msg);
+        } else if (persons.equals("*")) {
+            master.sendToAll(this, msg);
         } else {
-
+            master.sendToOne(this, persons, msg);
         }
     }
 
