@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class ChatClient extends Thread {
 
-    Socket socket;
+    private Socket socket;
     private Scanner input;
     private PrintWriter output;
     private IDataReady observer;
