@@ -1,7 +1,5 @@
 package chatServer;
 
-import clientHandler.ClientHandler;
-import clientHandler.ClientThread;
 import java.util.*;
 import java.net.*;
 import java.io.*;
@@ -13,55 +11,68 @@ import java.io.*;
 public class ChatServer {
 
     private ServerSocket serverSocket;
-    private static int uniqueId; //could use id to keep track of users and delete with id when user logout.
     private static String IP = "localhost";
     private static int PORT = 8081;
-    private ArrayList<ClientThread> ch;
+    private final List<ClientHandler> chlist = Collections.synchronizedList(new ArrayList());
 
-    public ChatServer() {
-        ch = new ArrayList<ClientThread>();
-
+    public static void main(String[] args) throws IOException {
+        if (args.length == 2) {
+            IP = args[0];
+            PORT = Integer.parseInt(args[1]);
+        }
+        ChatServer server = new ChatServer();
+        server.start();
     }
 
-    public void start() {
-        try {
-            serverSocket = new ServerSocket();
-            serverSocket.bind(new InetSocketAddress(IP, PORT));
-            //Waiting for client connections - infinite loop.
-            while (true) {
-                System.out.println("Waiting for clients to connect on port: " + PORT);
-                Socket socket = serverSocket.accept();
-
-                if (!true) {
-                    break; //Midlertidig
-                }
-
-                ClientThread c = new ClientThread(socket);
-                ch.add(c);
-                c.start();
-
-            }
-            // When attempting to close the server. First close serverSocket. 
-            // Then loop through clientHandlers in arraylist and close those threads.
-            try {
-                serverSocket.close();
-                for (ClientThread c : ch) {
-                    try {
-                        c.getScan().close();
-                        c.getPw().close();
-                        c.getSocket().close();
-                    } catch (Exception e) {
-                        System.out.println("Problems closing the client sockets or threads");
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Problems closing the server socket");
-            }
-
-        } catch (Exception e) {
-            System.out.println("Problems initializing server socket");
+    public void start() throws IOException {
+        serverSocket = new ServerSocket();
+        serverSocket.bind(new InetSocketAddress(IP, PORT));
+        //Waiting for client connections - infinite loop.
+        while (true) {
+            Socket socket = serverSocket.accept(); //BLOCK
+            new ClientHandler(this, socket).start();
         }
     }
+
+    public void addClient(ClientHandler ch) {
+        chlist.add(ch);
+    }
+
+    public void removeClient(ClientHandler ch) {
+        chlist.remove(ch);
+    }
+
+    public void parseCommand(String input) {
+        String[] split = input.split(":");
+        String cmd;
+        String cmd2;
+        String msg;
+        if (split.length > 2) {
+            cmd = split[0];
+            cmd2 = split[1];
+            msg = split[2];
+        } else {
+            cmd = split[0];
+            msg = split[1];
+        }
+
+        switch (cmd) {
+            case "CLIENTLIST":
+                String connectedClients;
+                StringBuilder sb = new StringBuilder("CLIENTLIST:");
+                chlist.forEach((h) -> {
+                    sb.append(h.getUsername() + ",");
+                });
+                chlist.forEach((h) -> {
+                    h.sendMessage();
+                });
+                break;
+            case "MSGRES":
+
+        }
+    }
+    
+    public void 
 
     public void stop() {
         try {
@@ -69,17 +80,6 @@ public class ChatServer {
         } catch (IOException e) {
             System.out.println("Error while stopping server");
         }
-    }
-
-    public static void main(String[] args) {
-
-        if (args.length == 2) {
-            IP = args[0];
-            PORT = Integer.parseInt(args[1]);
-        }
-
-        ChatServer server = new ChatServer();
-        server.start();
     }
 
 }
