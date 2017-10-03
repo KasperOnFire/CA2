@@ -9,12 +9,12 @@ import java.io.*;
  * @author Kasper
  */
 public class ChatServer {
-    
+
     private ServerSocket serverSocket;
     private static String IP = "localhost";
     private static int PORT = 8081;
     private final List<ClientHandler> clientList = Collections.synchronizedList(new ArrayList());
-    
+
     public static void main(String[] args) throws IOException {
         if (args.length == 2) {
             IP = args[0];
@@ -23,7 +23,7 @@ public class ChatServer {
         ChatServer server = new ChatServer();
         server.start();
     }
-    
+
     public void start() throws IOException {
         serverSocket = new ServerSocket();
         serverSocket.bind(new InetSocketAddress(IP, PORT));
@@ -34,16 +34,16 @@ public class ChatServer {
             new ClientHandler(this, socket).start();
         }
     }
-    
+
     public void addClient(ClientHandler ch) {
         clientList.add(ch);
     }
-    
+
     public void removeClient(ClientHandler ch) {
         clientList.remove(ch);
         sendClientList();
     }
-    
+
     public void sendToOne(ClientHandler sender, String person, String msg) {
         ClientHandler reciever = null;
         for (ClientHandler ch : clientList) {
@@ -54,14 +54,14 @@ public class ChatServer {
             }
         }
     }
-    
+
     public void sendToAll(ClientHandler sender, String msg) {
         String username = sender.getUsername();
-        for (ClientHandler ch : clientList) {
+        clientList.forEach((ch) -> {
             ch.printMsg("MSGRES:" + username + ":" + msg);
-        }
+        });
     }
-    
+
     public void sendToMany(ClientHandler sender, String persons, String msg) {
         String[] personList;
         List<ClientHandler> recievers = new ArrayList();
@@ -73,12 +73,12 @@ public class ChatServer {
                 recievers.add(client);
             }
         });
-        for (ClientHandler reciever : recievers) {
+        recievers.forEach((reciever) -> {
             reciever.printMsg("MSGRES:" + username + ":" + msg);
-        }
-        
+        });
+
     }
-    
+
     public void sendClientList() {
         String connectedClients;
         StringBuilder sb = new StringBuilder("CLIENTLIST:");
@@ -93,7 +93,7 @@ public class ChatServer {
             clientHandler.printMsg(connectedClients);
         }
     }
-    
+
     public void stop() {
         try {
             serverSocket.close();
@@ -101,5 +101,5 @@ public class ChatServer {
             System.out.println("Error while stopping server");
         }
     }
-    
+
 }
