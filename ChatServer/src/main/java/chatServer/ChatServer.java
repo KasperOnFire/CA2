@@ -1,6 +1,7 @@
 package chatServer;
 
 import clientHandler.ClientHandler;
+import clientHandler.ClientThread;
 import java.util.*;
 import java.net.*;
 import java.io.*;
@@ -17,9 +18,7 @@ public class ChatServer {
     private static int PORT = 8081;
     private ArrayList<ClientThread> ch;
 
-    public ChatServer(int PORT) {
-        this.PORT = PORT;
-
+    public ChatServer() {
         ch = new ArrayList<ClientThread>();
 
     }
@@ -28,16 +27,13 @@ public class ChatServer {
         try {
             serverSocket = new ServerSocket();
             serverSocket.bind(new InetSocketAddress(IP, PORT));
-
             //Waiting for client connections - infinite loop.
             while (true) {
-
                 System.out.println("Waiting for clients to connect on port: " + PORT);
-
                 Socket socket = serverSocket.accept();
 
                 if (!true) {
-                    break;
+                    break; //Midlertidig
                 }
 
                 ClientThread c = new ClientThread(socket);
@@ -49,8 +45,7 @@ public class ChatServer {
             // Then loop through clientHandlers in arraylist and close those threads.
             try {
                 serverSocket.close();
-                for (int i = 0; i < ch.size(); i++) {
-                    ClientThread c = ch.get(i);
+                for (ClientThread c : ch) {
                     try {
                         c.getScan().close();
                         c.getPw().close();
@@ -83,65 +78,8 @@ public class ChatServer {
             PORT = Integer.parseInt(args[1]);
         }
 
-        ChatServer server = new ChatServer(PORT);
+        ChatServer server = new ChatServer();
         server.start();
-    }
-
-    
-    /*-------------------------------------------------------------------------*/
-    
-    
-    class ClientThread extends Thread {
-
-        private Socket socket;
-        private Scanner scan;
-        private String username;
-        private PrintWriter pw;
-        private String input;
-        private String[] split;
-        private String cmd;
-        private String msg;
-
-        public ClientThread(Socket socket) {
-            this.socket = socket;
-            System.out.println("Attempt to create Scanner/PrintWriter for ClientHandler");
-
-            try {
-
-                scan = new Scanner(socket.getInputStream());
-                pw = new PrintWriter(socket.getOutputStream(), true); //Always remember true to enable autoflush
-                username = (String) scan.nextLine();
-                System.out.println(username + " connected to the server");
-
-            } catch (IOException e) {
-                System.out.println("Error creating Scanner or PrintWriter");
-            }
-
-        }
-
-        public void run() {
-
-            //The ClientThreads
-            boolean notStopping = true;
-
-            while (notStopping) {
-
-            }
-
-        }
-
-        public Socket getSocket() {
-            return socket;
-        }
-
-        public Scanner getScan() {
-            return scan;
-        }
-
-        public PrintWriter getPw() {
-            return pw;
-        }
-
     }
 
 }
