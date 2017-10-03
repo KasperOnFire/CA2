@@ -13,7 +13,7 @@ public class ChatServer {
     private ServerSocket serverSocket;
     private static String IP = "localhost";
     private static int PORT = 8081;
-    private final List<ClientHandler> clientList = Collections.synchronizedList(new ArrayList());
+    private final List<Handler> clientList = Collections.synchronizedList(new ArrayList());
 
     public static void main(String[] args) throws IOException {
         if (args.length == 2) {
@@ -31,22 +31,22 @@ public class ChatServer {
         System.out.println("Waiting for clients!");
         while (true) {
             Socket socket = serverSocket.accept(); //BLOCK
-            new ClientHandler(this, socket).start();
+            new Handler(this, socket).start();
         }
     }
 
-    public void addClient(ClientHandler ch) {
+    public void addClient(Handler ch) {
         clientList.add(ch);
     }
 
-    public void removeClient(ClientHandler ch) {
+    public void removeClient(Handler ch) {
         clientList.remove(ch);
         sendClientList();
     }
 
-    public void sendToOne(ClientHandler sender, String person, String msg) {
-        ClientHandler reciever = null;
-        for (ClientHandler ch : clientList) {
+    public void sendToOne(Handler sender, String person, String msg) {
+        Handler reciever = null;
+        for (Handler ch : clientList) {
             if (ch.getUsername().equals(person)) {
                 reciever = ch;
                 reciever.printMsg("MSGRES:" + sender.getUsername() + ":" + msg);
@@ -55,16 +55,16 @@ public class ChatServer {
         }
     }
 
-    public void sendToAll(ClientHandler sender, String msg) {
+    public void sendToAll(Handler sender, String msg) {
         String username = sender.getUsername();
         clientList.forEach((ch) -> {
             ch.printMsg("MSGRES:" + username + ":" + msg);
         });
     }
 
-    public void sendToMany(ClientHandler sender, String persons, String msg) {
+    public void sendToMany(Handler sender, String persons, String msg) {
         String[] personList;
-        List<ClientHandler> recievers = new ArrayList();
+        List<Handler> recievers = new ArrayList();
         String username = sender.getUsername();
         //SEND TO SPECIFIC
         personList = persons.split(",");
@@ -89,7 +89,7 @@ public class ChatServer {
         if (connectedClients.endsWith(",")) {
             connectedClients = connectedClients.substring(0, (connectedClients.length() - 1));
         }
-        for (ClientHandler clientHandler : clientList) {
+        for (Handler clientHandler : clientList) {
             clientHandler.printMsg(connectedClients);
         }
     }

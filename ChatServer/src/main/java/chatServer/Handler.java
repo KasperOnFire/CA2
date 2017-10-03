@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ClientHandler extends Thread {
+public class Handler extends Thread {
 
     private ChatServer master;
     private Socket socket;
@@ -16,7 +16,7 @@ public class ClientHandler extends Thread {
     private String username;
     private boolean loggedIn;
 
-    public ClientHandler(ChatServer server, Socket socket) throws IOException {
+    public Handler(ChatServer server, Socket socket) throws IOException {
         this.master = server;
         this.socket = socket;
         out = new PrintWriter(socket.getOutputStream(), true);
@@ -27,8 +27,6 @@ public class ClientHandler extends Thread {
     @Override
     public void run() {
         this.master.addClient(this);
-
-        initHelp();
         userLogin();
         while (loggedIn) {
             parseCommand();
@@ -37,14 +35,8 @@ public class ClientHandler extends Thread {
             master.removeClient(this);
             socket.close();
         } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    private void initHelp() {
-        out.println("Usage:\nCOMMAND:message");
-        out.println("Reserved Characters : and ,");
-        out.println("Please login. use LOGIN:username");
     }
 
     private void userLogin() {
@@ -54,17 +46,16 @@ public class ClientHandler extends Thread {
         String uname;
 
         if (split.length > 2) {
-            out.println("Cant use more than one : here");
-            userLogin();
+            loggedIn = false;
         }
 
         cmd = split[0];
         uname = split[1];
 
         if (!cmd.equals("LOGIN")) {
-            userLogin();
+            loggedIn = false;
         } else if (uname.contains(":") || uname.contains(",")) {
-            out.println("Illegal Characters : or ,");
+            loggedIn = false;
         } else {
             username = uname;
             loggedIn = true;
