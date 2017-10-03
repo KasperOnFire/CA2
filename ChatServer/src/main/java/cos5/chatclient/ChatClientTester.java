@@ -1,14 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package cos5.chatclient;
 
-/**
- *
- * @author Anton
- */
+import java.io.IOException;
+
 public class ChatClientTester {
     
+  public static void main(String[] args) throws IOException, InterruptedException {
+    ChatClient client = new ChatClient();
+    
+    client.addObserver((msg) -> {
+      System.out.println("Received a message: "+msg);
+    });
+    client.connect("localhost",1234);
+    
+    client.send("Hello");
+    client.send("Hello World");
+    client.send("Hello Wonderfull World");
+    Thread.sleep(100);
+    client.closeConnection();
+    
+    System.out.println("DONE");
+   
+    
+  }
+
+  
 }

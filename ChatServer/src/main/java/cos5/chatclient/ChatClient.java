@@ -18,6 +18,7 @@ public class ChatClient extends Thread {
   private Scanner input;
   private PrintWriter output;
   private IDataReady observer;
+  
   private boolean keepRunning = true;
 
   public void addObserver(IDataReady observer) {
@@ -40,10 +41,11 @@ public class ChatClient extends Thread {
   public void send(String msg) {
     output.println(msg);
   }
-
+ 
   
   @Override
     public void run()  { 
+    
     while (keepRunning) {
       String msg = input.nextLine();
       observer.messageReady(msg);
@@ -54,4 +56,9 @@ public class ChatClient extends Thread {
       Logger.getLogger(ChatClient.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
+    
+    public static void main(String[] args) {
+        
+    }
+  
 }
