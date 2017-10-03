@@ -11,7 +11,7 @@ import java.io.*;
 public class ChatServer {
 
     private ServerSocket serverSocket;
-    private static String IP = "localhost";
+    private static String IP = "0.0.0.0";
     private static int PORT = 8081;
     private final List<Handler> clientList = Collections.synchronizedList(new ArrayList());
 
