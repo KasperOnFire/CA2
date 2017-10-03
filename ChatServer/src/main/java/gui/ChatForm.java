@@ -93,9 +93,9 @@ public class ChatForm extends javax.swing.JFrame {
                                 .addComponent(jButton1))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jTextSend, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(18, 18, 18)
                                 .addComponent(jButton2)))
-                        .addGap(0, 12, Short.MAX_VALUE)))
+                        .addGap(0, 37, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -111,10 +111,10 @@ public class ChatForm extends javax.swing.JFrame {
                     .addComponent(jTextPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextSend, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                    .addComponent(jTextSend, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2))
                 .addContainerGap())
         );
@@ -122,33 +122,29 @@ public class ChatForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
     ChatClient cc;
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
-        if(cc != null){
-            cc.closeConnection();
-        }
-        cc = new ChatClient();
-        cc.addObserver((msg) -> {
-            jTextRecieve.append(msg+"\n");
-        });
+  
+            if (cc != null) {
+                cc.closeConnection();
+            }
+            cc = new ChatClient();
+            cc.addObserver((msg) -> {
+                jTextRecieve.append(msg + "\n");
+            });
+
+
+            try {
+                cc.connect(jTextIp.getText(), Integer.parseInt(jTextPort.getText()));
+            } catch (IOException ex) {
+                Logger.getLogger(ChatForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
         
-        jButton1.setText("Connected");
-        jButton1.setForeground(Color.green);
-        
-        try {
-            cc.connect(jTextIp.getText(), Integer.parseInt(jTextPort.getText()));
-        } catch (IOException ex) {
-            Logger.getLogger(ChatForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-   
+
         cc.send(jTextSend.getText());
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -183,7 +179,7 @@ public class ChatForm extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ChatForm().setVisible(true);
-               
+
             }
         });
     }
