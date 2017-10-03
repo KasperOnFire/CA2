@@ -123,10 +123,8 @@ public class ChatForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     ChatClient cc;
-    boolean pressed = false;
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (!pressed) {
-            pressed = true;
+  
             if (cc != null) {
                 cc.closeConnection();
             }
@@ -135,21 +133,14 @@ public class ChatForm extends javax.swing.JFrame {
                 jTextRecieve.append(msg + "\n");
             });
 
-            jButton1.setText("Disconnect");
-            jButton1.setForeground(Color.red);
 
             try {
                 cc.connect(jTextIp.getText(), Integer.parseInt(jTextPort.getText()));
             } catch (IOException ex) {
                 Logger.getLogger(ChatForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-        if (pressed) {
-            cc.closeConnection();
-            pressed = false;
-            jButton1.setText("Connect");
-            jButton1.setForeground(Color.black);
-        }
+        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
