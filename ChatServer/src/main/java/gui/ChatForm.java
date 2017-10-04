@@ -346,16 +346,17 @@ public class ChatForm extends javax.swing.JFrame {
 
             try {
                 cc.connect(jTextIp.getText(), Integer.parseInt(jTextPort.getText()));
+                jButton1.setEnabled(false);
+                
+                String username = (String)JOptionPane.showInputDialog(null, "Enter username",
+                "Username", JOptionPane.QUESTION_MESSAGE, icon, null, null);
+            
+                cc.send("LOGIN:"+username);
             } catch (IOException ex) {
                 Logger.getLogger(ChatForm.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            String username= null;
-            while(username==null){
-            username = (String)JOptionPane.showInputDialog(null, "Enter username",
-                "I like turtles", JOptionPane.QUESTION_MESSAGE, icon, null, null);
-            }
-            cc.send("LOGIN:"+username);
+            
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
