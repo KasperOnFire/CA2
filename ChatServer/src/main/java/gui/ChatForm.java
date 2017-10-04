@@ -51,6 +51,7 @@ public class ChatForm extends javax.swing.JFrame {
         jPanel4.setBackground(purple);
 
         jLabel3.setIcon(icon);
+        
 
     }
 
@@ -226,6 +227,7 @@ public class ChatForm extends javax.swing.JFrame {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Chat:"));
 
+        jTextRecieve.setEditable(false);
         jTextRecieve.setColumns(20);
         jTextRecieve.setRows(5);
         jScrollPane1.setViewportView(jTextRecieve);
@@ -314,6 +316,7 @@ public class ChatForm extends javax.swing.JFrame {
         cc = new ChatClient();
         cc.addObserver((msg) -> {
 
+            
             if (msg.startsWith("MSGRES:")) {
                 String[] m = msg.split(":");
                 jTextRecieve.append("From " + m[1] + ": " + m[2] + "\n");
@@ -330,6 +333,9 @@ public class ChatForm extends javax.swing.JFrame {
                     model1.addElement(names[i]);
                 }
                 jList1.setModel(model1);
+                jList1.setSelectedIndex(0);
+                
+                
             }
         });
 
@@ -340,7 +346,12 @@ public class ChatForm extends javax.swing.JFrame {
 
             String username = (String) JOptionPane.showInputDialog(null, "Enter username",
                     "Username", JOptionPane.QUESTION_MESSAGE, icon, null, null);
-
+            
+            
+            if(username==null || username.equalsIgnoreCase("")){
+                username="Anonymous";
+            }
+            
             cc.send("LOGIN:" + username);
         } catch (IOException ex) {
             Logger.getLogger(ChatForm.class.getName()).log(Level.SEVERE, null, ex);
