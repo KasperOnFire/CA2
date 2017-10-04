@@ -18,6 +18,10 @@ public class ChatClient extends Thread {
     public void addObserver(IDataReady observer) {
         this.observer = observer;
     }
+    
+    public void removeObserver(){
+        this.observer = null;
+    }
 
     public void closeConnection() {
         send("stop");
