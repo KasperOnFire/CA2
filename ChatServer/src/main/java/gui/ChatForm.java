@@ -35,32 +35,25 @@ public class ChatForm extends javax.swing.JFrame {
      * Creates new form ChatForm
      */
     URL url = new URL("https://i.imgur.com/RdsZp1Z.png");
-        Image image = ImageIO.read(url);
-        Icon icon = new ImageIcon(image);
+    Image image = ImageIO.read(url);
+    Icon icon = new ImageIcon(image);
+    Color purple = new Color(128, 26, 128);
+    Color green = new Color(26, 128, 26);
+
     public ChatForm() throws MalformedURLException, IOException {
         initComponents();
-        Color blue = new Color(128, 26, 128);
-        Color darkBlue = new Color(45, 97, 181);
-        this.getContentPane().setBackground(blue);
-        
-        jPanel1.setBackground(blue);
-        jPanel2.setBackground(blue);
-        jPanel3.setBackground(blue);
-        jPanel4.setBackground(blue);
-        
-        
+
+        this.getContentPane().setBackground(purple);
+
+        jPanel1.setBackground(purple);
+        jPanel2.setBackground(purple);
+        jPanel3.setBackground(purple);
+        jPanel4.setBackground(purple);
+
         jLabel3.setIcon(icon);
-        
-//        jButton1.setBackground(darkBlue);
-//        jButton2.setBackground(darkBlue);
-//        jButton3.setBackground(darkBlue);
-        
-            
+
     }
 
-
-        
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -314,81 +307,74 @@ public class ChatForm extends javax.swing.JFrame {
     ChatClient cc;
     DefaultListModel model1 = new DefaultListModel();
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-  
-            if (cc != null) {
-                cc.closeConnection();
+
+        if (cc != null) {
+            cc.closeConnection();
+        }
+        cc = new ChatClient();
+        cc.addObserver((msg) -> {
+
+            if (msg.startsWith("MSGRES:")) {
+                String[] m = msg.split(":");
+                jTextRecieve.append("From " + m[1] + ": " + m[2] + "\n");
+                Toolkit.getDefaultToolkit().beep();
             }
-            cc = new ChatClient();
-            cc.addObserver((msg) -> {
-               
-             
-                if(msg.startsWith("MSGRES:")){
-                    String[] m = msg.split(":");
-                    jTextRecieve.append("From " +m[1] +": " + m[2]+ "\n");
-                    Toolkit.getDefaultToolkit().beep();
-                }
-                
-                
-                if(msg.startsWith("CLIENTLIST:")){
+
+            if (msg.startsWith("CLIENTLIST:")) {
                 String[] namesList = msg.split(":");
                 String[] names = namesList[1].split(",");
                 model1.clear();
                 model1.addElement("*");
-                
-                for(int i=0; i<names.length;i++){
+
+                for (int i = 0; i < names.length; i++) {
                     model1.addElement(names[i]);
                 }
                 jList1.setModel(model1);
-             }
-            });
-
-             
-
-            try {
-                cc.connect(jTextIp.getText(), Integer.parseInt(jTextPort.getText()));
-                jButton1.setEnabled(false);
-                
-                String username = (String)JOptionPane.showInputDialog(null, "Enter username",
-                "Username", JOptionPane.QUESTION_MESSAGE, icon, null, null);
-            
-                cc.send("LOGIN:"+username);
-            } catch (IOException ex) {
-                Logger.getLogger(ChatForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            
+        });
+
+        try {
+            cc.connect(jTextIp.getText(), Integer.parseInt(jTextPort.getText()));
+            jButton1.setEnabled(false);
+            jButton1.setForeground(green);
+
+            String username = (String) JOptionPane.showInputDialog(null, "Enter username",
+                    "Username", JOptionPane.QUESTION_MESSAGE, icon, null, null);
+
+            cc.send("LOGIN:" + username);
+        } catch (IOException ex) {
+            Logger.getLogger(ChatForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-  
+
         List<String> s = jList1.getSelectedValuesList();
-        String sendMsg = "MSG:"; 
-        
-        if(s.get(0).equals("*")){
-            cc.send(sendMsg+"*:"+jTextSend.getText());
+        String sendMsg = "MSG:";
+
+        if (s.get(0).equals("*")) {
+            cc.send(sendMsg + "*:" + jTextSend.getText());
             return;
         }
-       
-        for(int i = 0; i<s.size(); i++){
-            sendMsg+=s.get(i)+",";
+
+        for (int i = 0; i < s.size(); i++) {
+            sendMsg += s.get(i) + ",";
         }
         if (sendMsg.endsWith(",")) {
             sendMsg = sendMsg.substring(0, (sendMsg.length() - 1));
         }
-        
-        sendMsg+=":";
-  
-       
-        cc.send(sendMsg+jTextSend.getText());
+
+        sendMsg += ":";
+
+        cc.send(sendMsg + jTextSend.getText());
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
-    
-    
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        JOptionPane.showMessageDialog(this, 
-                    "add some cool help text here! (:", "Help", WIDTH);          
+        JOptionPane.showMessageDialog(this,
+                "add some cool help text here! (:", "Help", WIDTH);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTextPortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextPortActionPerformed
@@ -430,9 +416,6 @@ public class ChatForm extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(ChatForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
-                        
-    
 
             }
         });
