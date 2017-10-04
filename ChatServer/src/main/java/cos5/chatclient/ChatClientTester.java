@@ -49,15 +49,11 @@ public class ChatClientTester {
     
     ChatClient.sleep(1000);
     
+    AAA.send("LOGOUT:");
+    
     BBB.closeConnection();
-    
-//    BBB.closeConnection();
-    
 
-    
     AAA.closeConnection();
-    
-   
     
   }
 

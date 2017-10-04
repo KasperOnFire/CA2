@@ -19,12 +19,7 @@ public class ChatClient extends Thread {
         this.observer = observer;
     }
     
-    public void removeObserver(){
-        this.observer = null;
-    }
-
     public void closeConnection() {
-        send("stop");
         keepRunning = false;
     }
 
@@ -42,11 +37,13 @@ public class ChatClient extends Thread {
 
     @Override
     public void run() {
+        
         while (keepRunning) {
             String msg = input.nextLine();
             observer.messageReady(msg);
         }
         try {
+            
             socket.close();
         } catch (IOException ex) {
             Logger.getLogger(ChatClient.class.getName()).log(Level.SEVERE, null, ex);

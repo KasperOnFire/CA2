@@ -65,8 +65,9 @@ public class Handler extends Thread {
 
     private void parseCommand() {
         String input = in.nextLine();
-        if (input.startsWith("LOGOUT")) {
+        if (input.startsWith("LOGOUT:")) {
             loggedIn = false;
+            master.sendClientList();
             return;
         }
         String[] split = input.split(":");
@@ -79,7 +80,8 @@ public class Handler extends Thread {
             msg = split[2];
             sendMsg(persons, msg);
         } else {
-            printMsg("No idea what you mean please try again");
+            loggedIn = false;
+            return;
         }
     }
 

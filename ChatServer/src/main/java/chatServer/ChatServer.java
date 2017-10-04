@@ -41,7 +41,7 @@ public class ChatServer {
 
     public void removeClient(Handler ch) {
         clientList.remove(ch);
-        sendClientList();
+        
     }
 
     public void sendToOne(Handler sender, String person, String msg) {
