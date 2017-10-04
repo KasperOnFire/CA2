@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,6 +34,9 @@ public class ChatForm extends javax.swing.JFrame {
     /**
      * Creates new form ChatForm
      */
+    URL url = new URL("https://i.imgur.com/RdsZp1Z.png");
+        Image image = ImageIO.read(url);
+        Icon icon = new ImageIcon(image);
     public ChatForm() throws MalformedURLException, IOException {
         initComponents();
         Color blue = new Color(128, 26, 128);
@@ -44,9 +48,8 @@ public class ChatForm extends javax.swing.JFrame {
         jPanel3.setBackground(blue);
         jPanel4.setBackground(blue);
         
-        URL url = new URL("https://i.imgur.com/RdsZp1Z.png");
-        Image image = ImageIO.read(url);
-        jLabel3.setIcon(new ImageIcon(image));
+        
+        jLabel3.setIcon(icon);
         
 //        jButton1.setBackground(darkBlue);
 //        jButton2.setBackground(darkBlue);
@@ -347,7 +350,11 @@ public class ChatForm extends javax.swing.JFrame {
                 Logger.getLogger(ChatForm.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            String username = JOptionPane.showInputDialog(null);
+            String username= null;
+            while(username==null){
+            username = (String)JOptionPane.showInputDialog(null, "Enter username",
+                "I like turtles", JOptionPane.QUESTION_MESSAGE, icon, null, null);
+            }
             cc.send("LOGIN:"+username);
 
     }//GEN-LAST:event_jButton1ActionPerformed
