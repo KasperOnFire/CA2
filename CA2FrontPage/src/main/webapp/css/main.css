@@ -25,15 +25,21 @@ h2 {
     color: rgb(26, 128, 26);
 }
 
-.doc-block{
+.doc-block {
     background-color: rgba(255, 255, 255, 0.05);
     width: 40%;
-    margin: 0.1em auto;
-    padding: 0.5em;
+    margin: 0.5em auto;
+    padding: 0.51em;
 }
-.doc-block h3{
-    color: rgb(26,126,26);
 
+.doc-block h3 {
+    color: rgb(26, 126, 26);
+}
+
+.doc-block p {
+    color: rgb(26, 126, 26);
+    font-size: 20px;
+    font-family: tahoma;
 }
 
 .button {
