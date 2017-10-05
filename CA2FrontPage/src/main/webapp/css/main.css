@@ -4,7 +4,7 @@
 }
 
 body {
-    background-color: #333;
+    background-color: rgb(65, 11, 65);
 }
 
 .main {
@@ -21,23 +21,29 @@ h1,
 h2 {
     display: block;
     margin: auto;
-    padding: 0.5em
+    padding: 0.5em;
+    color: rgb(26, 128, 26);
 }
 
-.docblock {}
+.doc-block{
+    background-color: rgba(255, 255, 255, 0.05);
+    width: 40%;
+    margin: 0.1em auto;
+    padding: 0.5em;
+}
+.doc-block h3{
+    color: rgb(26,126,26);
+
+}
 
 .button {
     display: block;
     width: 15%;
     margin: 1em auto;
     font: bold 24px Mohave;
-    background-color: #777;
+    background-color: rgb(26, 128, 26);
     text-decoration: none;
-    color: black;
+    color: rgb(65, 11, 65);
     padding: 5px 15px 5px 15px;
     border-radius: 5px;
-    border-top: 1px solid #CCCCCC;
-    border-right: 1px solid #333333;
-    border-bottom: 1px solid #333333;
-    border-left: 1px solid #CCCCCC;
 }
