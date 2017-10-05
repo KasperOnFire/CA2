@@ -236,6 +236,7 @@ public class ChatForm extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jTextArea1.setText("Press connect after entering valid IP and port.\n\nTo Chat:\nSelect recievers for your message in the list.\nSelect the star (*) to send to all.\nPress \"Send\" to send.");
