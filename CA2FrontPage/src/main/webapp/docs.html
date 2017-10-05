@@ -15,19 +15,23 @@
         <h1>Documentation</H1>
         <div class="doc-block">
             <h3>How to use?</h3>
-            <p></p>
+            <p>The system is a simple chat system using a client-server structure. Each client connects to a server using IP and port number for the server and then logs in with a username. Whenever a user logs in or out the server posts a list of all current users to every active user.
+You send a message to one or more users by typing MSG:<user1,user2,…>:<message>.
+You can message all users by typing MSG:*:<message>.
+It is very important to respect this format and to not use colons as they are a reserved character. Using this format will allow you to connect to multiple servers(not just this one!), as it is used as a standard format.
+</p>
         </div>
         <div class="doc-block">
             <h3>Design</h3>
-            <p></p>
+            <p>We based the system on an initial bare-bones “chat system” that echoed every message to every user without usernames. We have designed the client using an observer pattern, and allowing it to work both with and without a simple GUI .</p>
         </div>
         <div class="doc-block">
             <h3>Testing of client</h3>
-            <p></p>
+            <p>Testing our client against another groups server went well. There were no issues with the test.</p>
         </div>
         <div class="doc-block">
             <h3>Testing of server</h3>
-            <p></p>
+            <p>Testing another groups client against our server </p>
         </div>
         <h2>Members: Kasper Breindal, Kasper Jonassen, Anton Kornholt, and Kristian Krog</h2>
     </div>
