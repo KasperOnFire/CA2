@@ -41,7 +41,6 @@ public class ChatServer {
 
     public void removeClient(Handler ch) {
         clientList.remove(ch);
-        
     }
 
     public void sendToOne(Handler sender, String person, String msg) {
@@ -83,7 +82,7 @@ public class ChatServer {
         String connectedClients;
         StringBuilder sb = new StringBuilder("CLIENTLIST:");
         clientList.forEach((h) -> {
-            sb.append(h.getUsername() + ",");
+            sb.append(h.getUsername()).append(",");
         });
         connectedClients = sb.toString();
         if (connectedClients.endsWith(",")) {

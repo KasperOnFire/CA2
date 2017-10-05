@@ -3,6 +3,7 @@ package chatServer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,12 +32,6 @@ public class Handler extends Thread {
         while (loggedIn) {
             parseCommand();
         }
-        try {
-            master.removeClient(this);
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     private void userLogin() {
@@ -46,16 +41,16 @@ public class Handler extends Thread {
         String uname;
 
         if (split.length > 2) {
-            loggedIn = false;
+            logout();
         }
 
         cmd = split[0];
         uname = split[1];
 
         if (!cmd.equals("LOGIN")) {
-            loggedIn = false;
+            logout();
         } else if (uname.contains(":") || uname.contains(",")) {
-            loggedIn = false;
+            logout();
         } else {
             username = uname;
             loggedIn = true;
@@ -64,24 +59,28 @@ public class Handler extends Thread {
     }
 
     private void parseCommand() {
-        String input = in.nextLine();
-        if (input.startsWith("LOGOUT:")) {
-            loggedIn = false;
-            master.sendClientList();
-            return;
-        }
-        String[] split = input.split(":");
-        String cmd;
-        String persons;
-        String msg;
-        if (split.length > 2) {
-            cmd = split[0];
-            persons = split[1];
-            msg = split[2];
-            sendMsg(persons, msg);
-        } else {
-            loggedIn = false;
-            return;
+        try {
+            String input = in.nextLine();
+
+            if (input.startsWith("LOGOUT:")) {
+                logout();
+                return;
+            }
+            String[] split = input.split(":");
+            String cmd;
+            String persons;
+            String msg;
+            if (split.length > 2) {
+                cmd = split[0];
+                persons = split[1];
+                msg = split[2];
+                sendMsg(persons, msg);
+            } else {
+                logout();
+
+            }
+        } catch (NoSuchElementException e) {
+            logout();
         }
     }
 
@@ -101,5 +100,11 @@ public class Handler extends Thread {
 
     public String getUsername() {
         return this.username;
+    }
+
+    public void logout() {
+        loggedIn = false;
+        master.removeClient(this);
+        master.sendClientList();
     }
 }
