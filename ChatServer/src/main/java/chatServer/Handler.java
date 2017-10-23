@@ -10,10 +10,10 @@ import java.util.logging.Logger;
 
 public class Handler extends Thread {
 
-    private ChatServer master;
-    private Socket socket;
-    private Scanner in;
-    private PrintWriter out;
+    private final ChatServer master;
+    private final Socket socket;
+    private final Scanner in;
+    private final PrintWriter out;
     private String username;
     private boolean loggedIn;
 
@@ -27,14 +27,18 @@ public class Handler extends Thread {
 
     @Override
     public void run() {
-        this.master.addClient(this);
-        userLogin();
-        while (loggedIn) {
-            parseCommand();
+        try {
+            this.master.addClient(this);
+            userLogin();
+            while (loggedIn) {
+                parseCommand();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void userLogin() {
+    private void userLogin() throws IOException {
         String s = in.nextLine();
         String[] split = s.split(":");
         String cmd;
@@ -58,7 +62,7 @@ public class Handler extends Thread {
         }
     }
 
-    private void parseCommand() {
+    private void parseCommand() throws IOException {
         try {
             String input = in.nextLine();
 
@@ -67,11 +71,10 @@ public class Handler extends Thread {
                 return;
             }
             String[] split = input.split(":");
-            String cmd;
+            String cmd = split[0];
             String persons;
             String msg;
-            if (split.length > 2) {
-                cmd = split[0];
+            if (split.length > 2 && cmd == "MSG") {
                 persons = split[1];
                 msg = split[2];
                 sendMsg(persons, msg);
@@ -102,8 +105,9 @@ public class Handler extends Thread {
         return this.username;
     }
 
-    public void logout() {
+    public void logout() throws IOException {
         loggedIn = false;
+        socket.close();
         master.removeClient(this);
         master.sendClientList();
     }
